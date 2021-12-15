@@ -1,0 +1,28 @@
+.hamburger-menu-line {
+  width: 40px;
+  height: 4px;
+  padding: 0;
+  background-color: #fff;
+}
+
+.hamburger-menu-line.top-line,
+.hamburger-menu-line.mid-line {
+  margin-bottom: 5px;
+}
+
+.hamburger-menu:hover .hamburger-menu-line {
+  background-color: cyan;
+  transition: background-color 0.25s ease-out;
+}
+
+.themed-nav-link {
+  color: cyan;
+  padding: 4px;
+  text-decoration: none;
+}
+
+.themed-nav-link:hover {
+  opacity: 50%;
+  color: cyan;
+  transition: opacity 0.05s ease-in;
+}
