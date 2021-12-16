@@ -1,25 +1,22 @@
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
 import OffCanvasAppBar from "./components/header/OffCanvasAppBar";
 import { Routes, Route } from "react-router-dom";
 import NotFoundPage from "./components/NotFoundPage";
+import NoPostsYetPage from "./components/NoPostsYetPage";
+import MainFeed from "./components/MainFeed";
+import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
+import NewPostPage from "./components/NewPostPage";
+import LogoutPage from "./components/LogoutPage";
+import PostDetailsPage from "./components/PostDetailsPage";
+import ProfilePage from "./components/ProfilePage";
 
 const App = () => {
-  const sampleContent = [];
-  for (let i = 0; i < 100; i++) {
-    sampleContent.push(
-      <Row>
-        <Col>
-          <div>image here</div>
-        </Col>
-      </Row>
-    );
-  }
-
   return (
-    <div
-      className="App"
+    <Container
+      fluid
       style={{
         paddingTop: "113px",
       }}
@@ -29,15 +26,26 @@ const App = () => {
           <OffCanvasAppBar></OffCanvasAppBar>
         </Col>
       </Row>
-      <Routes>
-        <Route
-          exact
-          path="/"
-          element={<Container fluid>{sampleContent}</Container>}
-        ></Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </div>
+      <Row>
+        <Col>
+          <Routes>
+            <Route exact path="/" element={<MainFeed />}></Route>
+            <Route
+              exact
+              path="/nopostsyet"
+              element={<NoPostsYetPage />}
+            ></Route>
+            <Route exact path="/login" element={<LoginPage />}></Route>
+            <Route exact path="/logout" element={<LogoutPage />}></Route>
+            <Route exact path="/register" element={<RegisterPage />}></Route>
+            <Route exact path="/newpost" element={<NewPostPage />}></Route>
+            <Route exact path="/post/:id" element={<PostDetailsPage />}></Route>
+            <Route exact path="/profile" element={<ProfilePage />}></Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

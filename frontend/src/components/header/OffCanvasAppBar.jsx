@@ -24,7 +24,40 @@ const OffCanvasAppBar = () => {
       closeOffCanvasNav();
     }
   });
-
+  let body;
+  if (window.localStorage.getItem("auth_token")) {
+    body = (
+      <Nav style={{ flexGrow: 1 }}>
+        <NavLink text="Home Page" onClick={closeOffCanvasNav}></NavLink>
+        <NavLink
+          text="My Profile"
+          href="/profile"
+          onClick={closeOffCanvasNav}
+        ></NavLink>
+        <NavLink
+          text="New Post"
+          href="/newpost"
+          onClick={closeOffCanvasNav}
+        ></NavLink>
+        <NavLink
+          text="Logout"
+          href="/logout"
+          onClick={closeOffCanvasNav}
+        ></NavLink>
+      </Nav>
+    );
+  } else {
+    body = (
+      <Nav style={{ flexGrow: 1 }}>
+        <NavLink text="Home Page" onClick={closeOffCanvasNav}></NavLink>
+        <NavLink
+          text="Login/Register"
+          href="/login"
+          onClick={closeOffCanvasNav}
+        ></NavLink>
+      </Nav>
+    );
+  }
   return (
     <Navbar bg="dark" variant="dark" fixed="top" expand="false">
       <Container fluid>
@@ -46,16 +79,7 @@ const OffCanvasAppBar = () => {
             </Offcanvas.Title>
             <CloseButton variant="white" onClick={closeOffCanvasNav} />
           </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Nav style={{ flexGrow: 1 }}>
-              <NavLink text="Home Page" onClick={closeOffCanvasNav}></NavLink>
-              <NavLink
-                text="Login/Register"
-                href="/login"
-                onClick={closeOffCanvasNav}
-              ></NavLink>
-            </Nav>
-          </Offcanvas.Body>
+          <Offcanvas.Body>{body}</Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
