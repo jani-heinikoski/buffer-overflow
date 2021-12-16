@@ -1,5 +1,5 @@
 const express = require("express");
-const { body, validationResult } = require("express-validator");
+const { body, param, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const passwordValidator = require("password-validator");
 const issueToken = require("../../auth/issueToken");
@@ -31,6 +31,32 @@ const hashPasswordSync = (password) => {
   const hash = bcrypt.hashSync(password, salt);
   return { hashedPassword: hash, salt: salt };
 };
+
+/**
+ * Returns publicly available profile
+ */
+router.get(
+  "/:username",
+  param("username").isString().notEmpty(),
+  async (req, res) => {
+    try {
+      const user = await User.findOne({ username: req.params.username }).select(
+        "username registered bio"
+      );
+      if (user) {
+        return res.status(200).json({ msg: "Found user.", user: user });
+      } else {
+        return res
+          .status(404)
+          .json({ msg: "Can't find user with given username.", user: null });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: "Can't fetch user." });
+    }
+  }
+);
+
 /**
  * Update the user's profile (excluding password)
  */
