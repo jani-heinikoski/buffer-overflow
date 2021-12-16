@@ -34,7 +34,7 @@ const NewPostPage = () => {
         dismissible
       >
         <Alert.Heading>{header}</Alert.Heading>
-        <p>{text}</p>
+        <p style={{ color: "black" }}>{text}</p>
       </Alert>
     );
   };
