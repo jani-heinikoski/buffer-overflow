@@ -3,31 +3,36 @@ import { Navigate, useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Highlight from "react-highlight";
 import { useEffect, useState } from "react";
+import Comments from "./Comments";
+import CreateComment from "./CreateComment";
 
-const checkEditRights = (post) => {
-  let editRights = false;
-  let user = window.localStorage.getItem("user");
+// const checkEditRights = (post) => {
+//   let editRights = false;
+//   let user = window.localStorage.getItem("user");
 
-  try {
-    user = JSON.parse(user);
-  } catch (ex) {
-    user = null;
-  }
+//   try {
+//     user = JSON.parse(user);
+//   } catch (ex) {
+//     user = null;
+//   }
 
-  if (user && post) {
-    if (user._id === post.createdBy) {
-      editRights = true;
-    }
-  }
+//   if (user && post) {
+//     if (user._id === post.createdBy) {
+//       editRights = true;
+//     }
+//   }
 
-  return editRights;
-};
+//   return editRights;
+// };
 
 const PostDetailsPage = () => {
   let { id } = useParams();
   const [post, setPost] = useState(null);
   const [redirComponent, setRedirComponent] = useState(null);
-
+  const [comments, setComments] = useState(null);
+  /**
+   * Fetch the current post
+   */
   useEffect(() => {
     let mounted = true;
     const fetchPost = async () => {
@@ -57,8 +62,33 @@ const PostDetailsPage = () => {
       mounted = false;
     };
   }, [id]);
-
-  console.log(post);
+  /**
+   * Fetch all of the comments for the Comments component
+   * when the component first mounts (or id changes)
+   */
+  useEffect(() => {
+    let mounted = true;
+    const fetchComments = async () => {
+      try {
+        const serverResponse = await fetch(`/api/post/${id}/comment`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        const resJSON = await serverResponse.json();
+        if (serverResponse.ok && mounted) {
+          setComments(resJSON.comments);
+        }
+      } catch (ex) {
+        console.error(ex);
+      }
+    };
+    fetchComments();
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
 
   return (
     <Container>
@@ -71,6 +101,13 @@ const PostDetailsPage = () => {
       <hr style={{ color: "whitesmoke" }} />
       <h4 style={{ color: "whitesmoke" }}>Code snippet:</h4>
       <Highlight>{post && post.code}</Highlight>
+      <CreateComment
+        post={post}
+        newCommentCreatedCallback={(comment) => {
+          setComments([...comments, comment]);
+        }}
+      />
+      <Comments comments={comments} postId={id} />
       {redirComponent && redirComponent}
     </Container>
   );
