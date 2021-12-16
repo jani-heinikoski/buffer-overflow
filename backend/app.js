@@ -1,4 +1,5 @@
 require("dotenv").config();
+const passport = require("passport");
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -16,6 +17,8 @@ async function main() {
     return;
   }
   const app = express();
+  // Initialize the passport
+  app.use(passport.initialize());
   /* Content-Type of req must match application/json or it won't be parsed */
   app.use(express.json({ type: "application/json" }));
   /* Content-Type of req must match application/x-www-form-urlencoded or it won't be parsed */

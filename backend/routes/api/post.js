@@ -1,15 +1,14 @@
 const express = require("express");
-const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 // Require User so that the post's populate function works
 require("../../models/user");
 const Post = require("../../models/post");
 const Comment = require("../../models/comment");
+const passport = require("passport");
 // Initialize the passport object with the JWT strategy
 require("../../auth/validateJWT")(passport);
 
 const router = express.Router();
-router.use(passport.initialize());
 
 /* GET all posts */
 router.get("/", async (req, res) => {
@@ -20,6 +19,7 @@ router.get("/", async (req, res) => {
       posts: await Post.find()
         .populate("createdBy", "username")
         .select("-__v")
+        .sort({ createdDate: "desc" })
         .exec(),
     });
   } catch (error) {
@@ -39,7 +39,10 @@ router.get("/:id", async (req, res) => {
       .json({ msg: "No id for post provided.", post: null });
   }
   try {
-    const post = await Post.findById(req.params.id).exec();
+    const post = await Post.findById(req.params.id)
+      .populate("createdBy", "username")
+      .select("-__v")
+      .exec();
     if (post) {
       return res.status(200).json({ msg: "Post found", post: post });
     }
@@ -56,6 +59,7 @@ router.post(
   body("post").isObject({ strict: true }),
   body("post.description").isString().isLength({ min: 1 }),
   body("post.code").isString().isLength({ min: 1 }),
+  body("post.header").isString().isLength({ min: 1 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -63,6 +67,7 @@ router.post(
     }
     try {
       const newPost = new Post({
+        header: req.body.post.header,
         description: req.body.post.description,
         code: req.body.post.code,
         comments: [],
