@@ -31,6 +31,31 @@ router.get("/", async (req, res) => {
   }
 });
 
+/* Find posts whose header matches body.query */
+router.post("/search", body("query").isString(), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ msg: "Invalid request body." });
+  }
+  try {
+    // Returns all the posts
+    return res.status(200).json({
+      msg: "Posts matching query",
+      posts: await Post.find({ header: new RegExp(req.body.query, "i") })
+        .populate("createdBy", "username")
+        .select("-__v")
+        .sort({ createdDate: "desc" })
+        .exec(),
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      msg: "Internal server error occured when fetching all posts.",
+      posts: null,
+    });
+  }
+});
+
 /* GET a post by id */
 router.get("/:id", async (req, res) => {
   if (!req.params.id) {
