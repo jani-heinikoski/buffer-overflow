@@ -1,5 +1,5 @@
 const express = require("express");
-const { body, validationResult } = require("express-validator");
+const { body, param, validationResult } = require("express-validator");
 // Require User so that the post's populate function works
 require("../../models/user");
 const Post = require("../../models/post");
@@ -103,11 +103,57 @@ router.post(
       await post.save();
       return res.status(200).json({
         msg: "Comment added.",
-        comment: newComment,
+        comment: await Comment.populate(newComment, {
+          path: "createdBy",
+          select: "username",
+        }),
       });
     } catch (error) {
       console.error(error);
       return res.status(400).json({ msg: "Invalid request body." });
+    }
+  }
+);
+
+/* PATCH a comment's content */
+router.patch(
+  "/:postid/comment/:commentid",
+  passport.authenticate("jwt", { session: false }),
+  param("postid").isString().notEmpty(),
+  param("commentid").isString().notEmpty(),
+  body("content").isString(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.error(errors.array());
+      return res
+        .status(400)
+        .json({ msg: "Invalid request query/body params." });
+    }
+    try {
+      // Find the comment
+      const comment = await Comment.findById(req.params.commentid)
+        .select("-__v")
+        .exec();
+      // Return if not found
+      if (!comment) {
+        return res.status(400).json({ msg: "Invalid commentid." });
+      }
+      // Check whether the authenticated user has created the comment
+      if (comment.createdBy.toString() === req.user.id) {
+        // If yes, update it
+        comment.content = req.body.content;
+        await comment.save();
+        return res.status(200).json({ msg: "Saved comment successfully." });
+      } else {
+        // Otherwise respond with 401 not authorized
+        return res
+          .status(401)
+          .json({ msg: "Not authorized to edit this comment" });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json({ msg: "Invalid request." });
     }
   }
 );
@@ -118,21 +164,31 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      // Find the comment
       const comment = await Comment.findById(req.params.commentid)
         .select("-__v")
         .exec();
+      // Return if not found
       if (!comment) {
-        return res.status(400).json({ msg: "Invalid request." });
+        return res.status(400).json({ msg: "Invalid commentid." });
       }
+      // Check whether the authenticated user has created the comment
       if (comment.createdBy.toString() === req.user.id) {
+        // If yes, delete it
+        // (first pull it from the post's comments list and then remove from comments collection)
         await Post.findByIdAndUpdate(req.params.postid, {
           $pull: {
             comments: req.params.commentid,
           },
         }).exec();
         await Comment.findByIdAndDelete(req.params.commentid).exec();
+        return res.status(200).json({ msg: "Removed comment successfully." });
+      } else {
+        // Otherwise respond with 401 not authorized
+        return res
+          .status(401)
+          .json({ msg: "Not authorized to delete this comment" });
       }
-      res.status(200).json({ msg: "Removed comment successfully." });
     } catch (error) {
       console.error(error);
       return res.status(400).json({ msg: "Invalid request." });
