@@ -25,6 +25,7 @@ const OffCanvasAppBar = () => {
     }
   });
   let body;
+  // Show navigation links based on if the user is authenticated
   if (window.localStorage.getItem("auth_token")) {
     body = (
       <Nav style={{ flexGrow: 1 }}>
