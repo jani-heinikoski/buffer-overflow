@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
+import { DateTime } from "luxon";
 
 const tryParseUser = () => {
   let user = null;
@@ -109,9 +110,14 @@ const ProfilePage = () => {
 
   return (
     <Container>
-      <h2 className="mb-5" style={{ color: "whitesmoke", textAlign: "center" }}>
+      <h2 className="mb-3" style={{ textAlign: "center" }}>
         Profile page
       </h2>
+      <h4 style={{ textAlign: "center" }}>
+        {`Registered on: ${DateTime.fromISO(user.registered).toLocaleString(
+          DateTime.DATETIME_SHORT_WITH_SECONDS
+        )}`}
+      </h4>
       {alertComponent && alertComponent}
       <Form>
         <Form.Group className="mb-3" controlId="formBasicFname">
