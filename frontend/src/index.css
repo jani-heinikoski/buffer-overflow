@@ -31,3 +31,14 @@ html body {
   color: cyan;
   transition: opacity 0.05s ease-in;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p {
+  color: whitesmoke;
+}
