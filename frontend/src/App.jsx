@@ -12,6 +12,7 @@ import NewPostPage from "./components/NewPostPage";
 import LogoutPage from "./components/LogoutPage";
 import PostDetailsPage from "./components/PostDetailsPage";
 import ProfilePage from "./components/ProfilePage";
+import PublicProfilePage from "./components/PublicProfilePage";
 
 const App = () => {
   return (
@@ -41,6 +42,11 @@ const App = () => {
             <Route exact path="/newpost" element={<NewPostPage />}></Route>
             <Route exact path="/post/:id" element={<PostDetailsPage />}></Route>
             <Route exact path="/profile" element={<ProfilePage />}></Route>
+            <Route
+              exact
+              path="/profile/:username"
+              element={<PublicProfilePage />}
+            ></Route>
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Col>
