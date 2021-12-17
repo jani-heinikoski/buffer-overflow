@@ -6,12 +6,14 @@ const path = require("path");
 const cors = require("cors");
 const postRouter = require("./routes/api/post");
 const userRouter = require("./routes/api/user");
+const createAdminUser = require("./createAdminUser");
 
 async function main() {
   /* Continue with application only if connection to db succeeds */
   try {
     await mongoose.connect(process.env.MONGO_URL);
     console.log(`Connected successfully to ${process.env.MONGO_URL}`);
+    await createAdminUser("admin", process.env.ADMIN_PWD);
   } catch (err) {
     console.error(err);
     return;
