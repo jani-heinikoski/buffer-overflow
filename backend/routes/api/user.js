@@ -11,7 +11,7 @@ require("../../auth/validateJWT")(passport);
 
 const MIN_PWD_LENGTH = 8;
 const passwordSchema = new passwordValidator();
-
+/* Create the password schema for validating passwords when registering */
 passwordSchema
   .is()
   .min(MIN_PWD_LENGTH)
@@ -25,7 +25,7 @@ passwordSchema
   .symbols();
 
 const router = express.Router();
-
+/* Function for hashing (and salting) passwords */
 const hashPasswordSync = (password) => {
   const salt = bcrypt.genSaltSync();
   const hash = bcrypt.hashSync(password, salt);
@@ -39,7 +39,13 @@ router.get(
   "/:username",
   param("username").isString().notEmpty(),
   async (req, res) => {
+    /* Check if express-validator "failed" */
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ msg: "Invalid request params." });
+    }
     try {
+      /* Find the user and select only the information that other users are allowed to see */
       const user = await User.findOne({ username: req.params.username }).select(
         "username registered bio"
       );
@@ -69,12 +75,13 @@ router.patch(
   body("email").isEmail().normalizeEmail({ gmail_remove_dots: false }),
   body("bio").isString(),
   async (req, res) => {
+    /* Check if express-validator "failed" */
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ msg: "Invalid form data." });
     }
     try {
-      // Check if the username is already in use
+      // Check if the username has changed and is already in use
       if (req.user.username !== req.body.username) {
         if (
           await User.exists({ username: new RegExp(`^${req.body.username}$`) })
@@ -82,6 +89,8 @@ router.patch(
           return res.status(400).json({ msg: "Username already in use." });
         }
       }
+      // Find the authenticated user and update their information.
+      // The "new" -option makes the findByIdAndUpdate return the new updated doc
       const user = await User.findByIdAndUpdate(
         req.user.id,
         {
@@ -103,6 +112,7 @@ router.patch(
           registered: user.registered,
           bio: user.bio,
           username: user.username,
+          admin: user.admin,
         },
       });
     } catch (error) {
@@ -120,11 +130,13 @@ router.post(
   body("username").isString().notEmpty(),
   body("password").isLength({ min: MIN_PWD_LENGTH }),
   async (req, res) => {
+    /* Check if express-validator "failed" */
     const errors = validationResult(req);
     if (!errors.isEmpty() || !passwordSchema.validate(req.body.password)) {
       return res.status(400).json({ msg: "Invalid password/username" });
     }
     try {
+      /* Find the user by their username */
       const user = await User.findOne({
         username: new RegExp(`^${req.body.username}$`),
       })
@@ -133,7 +145,10 @@ router.post(
       if (!user) {
         return res.status(400).json({ msg: "Invalid password/username" });
       }
+      /* Check if the hashed plaintext password combined with the salt matches the hash saved in the database
+      (in layman's terms check if the user gave correct password) */
       if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
+        /* Return some user data to the client along with the JWT token from issueToken function */
         return res.status(200).json({
           msg: "Authentication successful",
           token: issueToken(user),
@@ -145,6 +160,7 @@ router.post(
             registered: user.registered,
             bio: user.bio,
             username: user.username,
+            admin: user.admin,
           },
         });
       }
@@ -166,6 +182,7 @@ router.post(
   body("email").isEmail().normalizeEmail({ gmail_remove_dots: false }),
   body("bio").isString(),
   async (req, res) => {
+    /* Check if express-validator "failed" */
     const errors = validationResult(req);
     if (!errors.isEmpty() || !passwordSchema.validate(req.body.password)) {
       return res.status(400).json({ msg: "Invalid form data." });
