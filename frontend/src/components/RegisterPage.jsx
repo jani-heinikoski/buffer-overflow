@@ -42,7 +42,9 @@ const RegisterPage = () => {
         setAlertComponent(
           <Alert variant="success">
             <Alert.Heading>New account has been created!</Alert.Heading>
-            <p>Login to your account to start posting!</p>
+            <p style={{ color: "black" }}>
+              Login to your account to start posting!
+            </p>
             <hr />
             <Button
               variant="success"
@@ -65,7 +67,9 @@ const RegisterPage = () => {
               dismissible
             >
               <Alert.Heading>{resJSON.msg}</Alert.Heading>
-              <p>Check the form fields you have filled!</p>
+              <p style={{ color: "black" }}>
+                Check the form fields you have filled!
+              </p>
             </Alert>
           );
         }
