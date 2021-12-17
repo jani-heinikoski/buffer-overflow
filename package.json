@@ -6,7 +6,7 @@
   "scripts": {
     "startServerProd": "cd backend && npm start",
     "startServerDev": "cd backend && npm run dev",
-    "startReactTestServer": "cd frontend && npm start",
+    "startReactDevServer": "cd frontend && npm start",
     "buildFrontend": "cd frontend && npm run build",
     "install": "cd frontend && npm install && cd ../backend && npm install"
   },
