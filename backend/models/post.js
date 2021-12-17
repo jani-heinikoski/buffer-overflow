@@ -14,17 +14,17 @@ const postSchema = new mongoose.Schema({
     required: false,
   },
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-  likes: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   createdDate: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  lastModifiedDate: {
     type: Date,
     required: true,
     default: Date.now,
