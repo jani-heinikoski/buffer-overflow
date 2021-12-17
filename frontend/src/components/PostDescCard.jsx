@@ -2,7 +2,6 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Stack from "react-bootstrap/Stack";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Nav from "react-bootstrap/Nav";
@@ -20,16 +19,33 @@ const getUser = () => {
   return user;
 };
 
-const DeleteButton = (post) => {
+const DeleteButton = (post, setVisibility) => {
   if (!post) {
     return <></>;
   }
-  const deletePost = () => {
-    console.log(`deleting post ${post.header}`);
+  const deletePost = async () => {
+    try {
+      const serverResponse = await fetch(`/api/post/${post._id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: window.localStorage.getItem("auth_token"),
+        },
+      });
+      const resJSON = await serverResponse.json();
+      if (serverResponse.ok) {
+        console.log("deleted post successfully");
+        setVisibility(false);
+      } else {
+        console.log(resJSON.msg);
+      }
+    } catch (ex) {
+      console.error(ex);
+    }
   };
   let user = getUser();
   if (user) {
-    if (user._id === post.createdBy._id) {
+    if (user._id === post.createdBy._id || user.admin) {
       return (
         <Button
           variant="danger"
@@ -44,16 +60,16 @@ const DeleteButton = (post) => {
   return <></>;
 };
 
-const EditButton = (post) => {
+const EditButton = (post, redirectToEditPost) => {
   if (!post) {
     return <></>;
   }
   const editPost = () => {
-    console.log(`redirring to edit post ${post.header}`);
+    redirectToEditPost();
   };
   let user = getUser();
   if (user) {
-    if (user._id === post.createdBy._id) {
+    if (user._id === post.createdBy._id || user.admin) {
       return (
         <Button
           variant="primary"
@@ -70,6 +86,10 @@ const EditButton = (post) => {
 
 const PostDescCard = ({ post }) => {
   const [redirComponent, setRedirComponent] = useState(null);
+  const [visibility, setVisibility] = useState(true);
+  if (!visibility) {
+    return <></>;
+  }
   /**
    * Show only maximum of 200 first chars of the description
    */
@@ -82,6 +102,10 @@ const PostDescCard = ({ post }) => {
 
   const redirectToPostDetails = () => {
     setRedirComponent(<Navigate to={`/post/${post._id}`} />);
+  };
+
+  const redirectToEditPost = () => {
+    setRedirComponent(<Navigate to={`/post/edit/${post._id}`} />);
   };
 
   const redirectToPublicProfile = (username) => {
@@ -107,8 +131,8 @@ const PostDescCard = ({ post }) => {
           </Col>
           <Col>
             <Row>
-              {DeleteButton(post)}
-              {EditButton(post)}
+              {DeleteButton(post, setVisibility)}
+              {EditButton(post, redirectToEditPost)}
             </Row>
           </Col>
         </Row>
@@ -118,7 +142,9 @@ const PostDescCard = ({ post }) => {
         <Card.Subtitle className="mb-3 text-muted">
           {`Published: ${DateTime.fromISO(post.createdDate).toLocaleString(
             DateTime.DATETIME_SHORT_WITH_SECONDS
-          )}`}
+          )} | Last edited: ${DateTime.fromISO(
+            post.lastModifiedDate
+          ).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}`}
         </Card.Subtitle>
         <Card.Text>{desc}</Card.Text>
         <Stack direction="horizontal" gap={3}>
@@ -131,7 +157,6 @@ const PostDescCard = ({ post }) => {
           >
             Show more
           </Button>
-          <Container>Likes: {post.likes}</Container>
         </Stack>
       </Card.Body>
       {redirComponent && redirComponent}
