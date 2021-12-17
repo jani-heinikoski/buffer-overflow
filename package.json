@@ -1,0 +1,24 @@
+{
+  "name": "buffer-overflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "startServerProd": "cd backend && npm start",
+    "startServerDev": "cd backend && npm run dev",
+    "startReactTestServer": "cd frontend && npm start",
+    "buildFrontend": "cd frontend && npm run build",
+    "install": "cd frontend && npm install && cd ../backend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jani-heinikoski/buffer-overflow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jani-heinikoski/buffer-overflow/issues"
+  },
+  "homepage": "https://github.com/jani-heinikoski/buffer-overflow#readme"
+}
