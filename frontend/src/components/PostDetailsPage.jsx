@@ -104,7 +104,7 @@ const PostDetailsPage = () => {
       <CreateComment
         post={post}
         newCommentCreatedCallback={(comment) => {
-          setComments([...comments, comment]);
+          setComments([comment, ...comments]);
         }}
       />
       <Comments comments={comments} postId={id} />
