@@ -56,7 +56,7 @@ const LoginPage = () => {
                 dismissible
               >
                 <Alert.Heading>{resJSON.msg}!</Alert.Heading>
-                <p>
+                <p style={{ color: "black" }}>
                   Make sure you have entered a correct username and password.
                   Register to create a new account first.
                 </p>
