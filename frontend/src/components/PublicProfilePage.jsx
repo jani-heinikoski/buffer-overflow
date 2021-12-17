@@ -50,6 +50,9 @@ const PublicProfilePage = () => {
   const redirectToNotFound = () => {
     setRedirComponent(<Navigate to={"/notfound"} />);
   };
+  /**
+   * Fetch the public user information from the backend
+   */
   useEffect(() => {
     let mounted = true;
     const fetchPost = async () => {

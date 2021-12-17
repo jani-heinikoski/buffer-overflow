@@ -6,7 +6,9 @@ import { Navigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 import { DateTime } from "luxon";
-
+/**
+ * Tries to parse the user from localStorage
+ */
 const tryParseUser = () => {
   let user = null;
   try {
@@ -77,7 +79,10 @@ const ProfilePage = () => {
       </Alert>
     );
   };
-
+  /**
+   * Sends a PATCH request to the backend
+   * (requests to update the profile based on the form data)
+   */
   const updateProfile = async (event) => {
     event.preventDefault();
     try {

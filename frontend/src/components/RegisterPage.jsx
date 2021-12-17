@@ -18,7 +18,10 @@ const RegisterPage = () => {
   const redirectToLogin = () => {
     setRedirComponent(<Navigate to={"/login"} />);
   };
-
+  /**
+   * Sends a POST request to the backend with the form's data
+   * in request body (i.e., asks the backend to register a new user based on user input)
+   */
   const register = async (e) => {
     e.preventDefault();
     try {
@@ -38,7 +41,6 @@ const RegisterPage = () => {
       });
       const resJSON = await serverResponse.json();
       if (serverResponse.ok) {
-        console.log(resJSON);
         setAlertComponent(
           <Alert variant="success">
             <Alert.Heading>New account has been created!</Alert.Heading>

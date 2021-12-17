@@ -8,7 +8,9 @@ import Nav from "react-bootstrap/Nav";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { DateTime } from "luxon";
-
+/**
+ * Tries to parse the user from localStorage
+ */
 const getUser = () => {
   let user;
   try {
@@ -18,11 +20,17 @@ const getUser = () => {
   }
   return user;
 };
-
+/**
+ * Delete button for the post description card
+ * (only shown if user is logged in and has created the post)
+ */
 const DeleteButton = (post, setVisibility) => {
   if (!post) {
     return <></>;
   }
+  /**
+   * Sends a delete request to the backend, requesting to delete the post
+   */
   const deletePost = async () => {
     try {
       const serverResponse = await fetch(`/api/post/${post._id}`, {
@@ -34,7 +42,9 @@ const DeleteButton = (post, setVisibility) => {
       });
       const resJSON = await serverResponse.json();
       if (serverResponse.ok) {
-        console.log("deleted post successfully");
+        /**
+         * If post was deleted successfully, remove it from the main feed
+         */
         setVisibility(false);
       } else {
         console.log(resJSON.msg);
@@ -59,7 +69,10 @@ const DeleteButton = (post, setVisibility) => {
   }
   return <></>;
 };
-
+/**
+ * Edit button for the post description card
+ * (only shown if user is logged in and has created the post)
+ */
 const EditButton = (post, redirectToEditPost) => {
   if (!post) {
     return <></>;

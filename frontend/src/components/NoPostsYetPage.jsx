@@ -7,15 +7,21 @@ import Button from "react-bootstrap/Button";
 
 const NotFoundPage = () => {
   const [redirComponent, setRedirComponent] = useState(null);
-
+  /**
+   * Redirects user to the login page
+   */
   const redirectToLogin = () => {
     setRedirComponent(<Navigate to={"/login"} />);
   };
-
+  /**
+   * Redirects user to the new post page
+   */
   const redirectToNewPost = () => {
     setRedirComponent(<Navigate to={"/newpost"} />);
   };
-
+  /**
+   * Show different message based on if the user is logged in
+   */
   const authToken = window.localStorage.getItem("auth_token");
   let btn;
   if (authToken) {

@@ -8,8 +8,14 @@ import Form from "react-bootstrap/Form";
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PostDescCard from "./PostDescCard";
-
+/**
+ * The search bar component on the top of the page
+ */
 const SearchComponent = (setPosts) => {
+  /**
+   * Requests the backend API for posts which match
+   * the given keywords (from form data)
+   */
   const searchPosts = async (e) => {
     e.preventDefault();
     try {
@@ -51,7 +57,9 @@ const SearchComponent = (setPosts) => {
 const MainFeed = () => {
   const [posts, setPosts] = useState([]);
   const [redirComponent, setRedirComponent] = useState(null);
-
+  /**
+   * Fetch all of the posts when the component mounts
+   */
   useEffect(() => {
     let mounted = true;
     const fetchPosts = async () => {
@@ -65,6 +73,9 @@ const MainFeed = () => {
         if (serverResponse.ok) {
           const resJSON = await serverResponse.json();
           if (mounted) {
+            /**
+             * No posts yet if server responds with 200 OK and empty array
+             */
             if (resJSON.posts && resJSON.posts.length === 0) {
               setRedirComponent(<Navigate to={"/nopostsyet"} />);
               return;
@@ -87,7 +98,9 @@ const MainFeed = () => {
   }, []);
 
   let p;
-
+  /**
+   * If not posts, show no posts found...
+   */
   if (posts && posts.length === 0) {
     p = (
       <h2 style={{ color: "whitesmoke", textAlign: "center" }}>

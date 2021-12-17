@@ -96,6 +96,9 @@ const NewPostPage = () => {
         "Check the form for invalid data!"
       );
     }
+    /**
+     * Smooth scroll bag to top of the page
+     */
     window.scrollTo({
       top: 0,
       left: 0,

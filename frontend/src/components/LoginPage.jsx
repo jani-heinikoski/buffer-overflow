@@ -14,15 +14,22 @@ import { Navigate } from "react-router-dom";
 const LoginPage = () => {
   const [alertComponent, setAlertComponent] = useState(null);
   const [redirComponent, setRedirComponent] = useState(null);
-
+  /**
+   * Redirects the user to the register page
+   */
   const redirectToRegister = () => {
     setRedirComponent(<Navigate to={"/register"} />);
   };
-
+  /**
+   * Redirects the user to the main feed page
+   */
   const redirectToMainPage = () => {
     setRedirComponent(<Navigate to={"/"} />);
   };
-
+  /**
+   * Sends the user's login credentials (from form data)
+   * to the backend and tries to authenticate with the server.
+   */
   const login = async (e) => {
     e.preventDefault();
     const username = document.querySelector("#formBasicUsername").value;
@@ -42,10 +49,16 @@ const LoginPage = () => {
         const resJSON = await serverResponse.json();
         if (serverResponse.ok) {
           console.log(resJSON);
+          /**
+           * Extract the JWT auth_token and the user info from the response
+           */
           window.localStorage.setItem("auth_token", `Bearer ${resJSON.token}`);
           window.localStorage.setItem("user", JSON.stringify(resJSON.user));
           redirectToMainPage();
         } else {
+          /**
+           * Show a warning if the authentication fails
+           */
           if (resJSON.msg) {
             setAlertComponent(
               <Alert
