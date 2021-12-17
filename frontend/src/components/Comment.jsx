@@ -125,6 +125,7 @@ const EditCommentBody = (
       const resJSON = await serverResponse.json();
       console.log(resJSON.msg);
       if (serverResponse.ok) {
+        /* If the comment was successfully edited, stop editing and update the state */
         stopEdit();
         comment.content = commentContent;
         comment.lastModifiedDate = new Date(Date.now()).toISOString();

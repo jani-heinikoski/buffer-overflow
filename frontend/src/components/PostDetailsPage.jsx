@@ -6,25 +6,6 @@ import { useEffect, useState } from "react";
 import Comments from "./Comments";
 import CreateComment from "./CreateComment";
 
-// const checkEditRights = (post) => {
-//   let editRights = false;
-//   let user = window.localStorage.getItem("user");
-
-//   try {
-//     user = JSON.parse(user);
-//   } catch (ex) {
-//     user = null;
-//   }
-
-//   if (user && post) {
-//     if (user._id === post.createdBy) {
-//       editRights = true;
-//     }
-//   }
-
-//   return editRights;
-// };
-
 const PostDetailsPage = () => {
   let { id } = useParams();
   const [post, setPost] = useState(null);

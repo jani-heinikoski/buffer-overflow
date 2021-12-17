@@ -132,6 +132,7 @@ const EditPostPage = () => {
         "Check the form for invalid data!"
       );
     }
+    /* Smooth scroll back to the top of the page */
     window.scrollTo({
       top: 0,
       left: 0,

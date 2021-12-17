@@ -27,9 +27,8 @@ html body {
 }
 
 .themed-nav-link:hover {
-  opacity: 50%;
-  color: cyan;
-  transition: opacity 0.05s ease-in;
+  color: blue;
+  transition: color 0.05s ease-in;
 }
 
 h1,
