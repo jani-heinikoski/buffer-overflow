@@ -91,7 +91,7 @@ const MainFeed = () => {
   if (posts && posts.length === 0) {
     p = (
       <h2 style={{ color: "whitesmoke", textAlign: "center" }}>
-        Fetching posts...
+        No posts found...
       </h2>
     );
   } else {
